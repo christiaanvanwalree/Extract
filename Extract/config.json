@@ -1,0 +1,15 @@
+{
+	"SqlServerConfig": {
+		"DataSource": "ABSI-NED2",
+		"InitialCatalog": "master",
+		"UserId": "sa",
+		"Password": "root",
+		"ConnectionTimeout": "300",
+		"DbSavePath": "C:\\Users\\Chrivanw\\Documents\\Visual Studio 2015\\Projects\\Extract\\Extract\\App_Data\\databases\\{0}{1}"
+	},
+	"MySqlServerConfig": {
+		"UserId":"root",
+		"Password": "root",
+		"DbSavePath": "C:\\Users\\Chrivanw\\Documents\\Visual Studio 2015\\Projects\\Extract\\Extract\\App_Data\\databases\\"
+	}
+}
