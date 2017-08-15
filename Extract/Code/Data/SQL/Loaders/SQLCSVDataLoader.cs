@@ -7,19 +7,18 @@ using System.IO.Compression;
 
 namespace Extract
 {
-	public class SQLCSVDataLoader : IDataLoader
+	public class SQLCSVLoader : IDataLoader
 	{
 
-		private readonly SQLDatabaseController controller;
+		private readonly SQLServerContext context;
 
-		public SQLCSVDataLoader(SQLDatabaseController controller) {
-			if (controller == null) throw new ArgumentNullException("controller");
-
-			this.controller = controller;
+		public SQLCSVLoader(SQLServerContext context) {
+			if (context == null) throw new ArgumentNullException("context");
+			this.context = context;
 		}
 
-		public string Export(string database) {
-			if (!SQLDatabaseController.DatabaseExists(database)) throw new InvalidOperationException("database does not exist");
+		public DataFile Export(string database) {
+			if (!context.DatabaseExists(database)) throw new InvalidOperationException("database does not exist");
 
 			string folderName = Guid.NewGuid().ToString();
 			string zipName = folderName + DataConfig.zipExt;
@@ -27,7 +26,7 @@ namespace Extract
 			string absoluteZipPath = Path.Combine(DataConfig.baseDir, DataConfig.exportDir, zipName);
 
 			Directory.CreateDirectory(absoluteFolderPath);
-			TableCollection tables = controller.Tables;
+			TableCollection tables = context.Tables;
 
 			for (int i = 0; i < tables.Count; i++) {
 
@@ -35,25 +34,27 @@ namespace Extract
 
 				StreamWriter writer = new StreamWriter(Path.Combine(absoluteFolderPath, tableName + DataConfig.csvExt));
 				string selectQuery = SQLQueryGenerator.GetSelectQuery(tableName);
-				controller.ExecuteReader(selectQuery, (reader) => CSVReaderWriter.CreateCsvFile(reader, writer));
+				context.ExecuteReader(selectQuery, (reader) => CSVReaderWriter.CreateCsvFile(reader, writer));
 			}
 
 			ZipFile.CreateFromDirectory(absoluteFolderPath, absoluteZipPath);
 			Directory.Delete(absoluteFolderPath, true);
-			return Path.Combine(DataConfig.exportDir, zipName);
+
+			DataFile file = new DataFile(Path.Combine(DataConfig.exportDir, zipName), folderName, database);
+			return file;
 		}
 
 		
-		public void Load(DataFile file) {
+		public void Import(DataFile file) {
 
-			if (!SQLDatabaseController.DatabaseExists(file.database)) {
+			if (!context.DatabaseExists(file.database)) {
 				string createDatabaseQuery = SQLQueryGenerator.GetCreateDatabaseQuery(file.database);
-				controller.ExecuteNonQuery(createDatabaseQuery);
-				controller.ChangeDatabase(file.database);
+				context.ExecuteNonQuery(createDatabaseQuery);
+				context.ChangeDatabase(file.database);
 			}
 
 			DataTable csvData = CSVReaderWriter.ReadCsvDataTable(file.path);
-			controller.ExecuteBulkCopy((bulkCopy) => CreateDatabaseTable(file, csvData, bulkCopy));
+			context.ExecuteBulkCopy((bulkCopy) => CreateDatabaseTable(file, csvData, bulkCopy));
 		}
 
 
@@ -68,8 +69,8 @@ namespace Extract
 			}
 
 			string createTableQuery = SQLQueryGenerator.GetCreateTableQuery(file.fileName, columnNames);
-			controller.ExecuteNonQuery(createTableQuery);
-			controller.Refresh();
+			context.ExecuteNonQuery(createTableQuery);
+			context.Refresh();
 
 			bulkCopy.DestinationTableName = SQLQueryGenerator.EncloseInBrackets(file.fileName);
 			bulkCopy.WriteToServer(data);

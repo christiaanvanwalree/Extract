@@ -10,10 +10,10 @@ namespace Extract
 	public static class DatabaseContextFactory
 	{
 
-		public static SQLDatabaseController CreateSQLDatabaseContext(string database = null) {
+		public static SQLServerContext CreateSQLDatabaseContext(string database = null) {
 			database = (database == null) ? DataConfig.SQLConfig.InitialCatalog : database;
-			SQLDatabaseController controller = new SQLDatabaseController(database);
-			return controller;
+			SQLServerContext context = new SQLServerContext(database);
+			return context;
 		}
 
 		public static MySqlConnection CreateMySQLDatabaseContext(string database) {

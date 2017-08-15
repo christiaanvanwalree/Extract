@@ -35,7 +35,7 @@ namespace Extract
 
 				DataFile file = new DataFile(localFileName, fileName, database);
 				IDataLoader loader = DataLoaderFactory.CreateDataLoader(file.type, database);
-				loader.Load(file);
+				loader.Import(file);
 
 				return file;
 			});

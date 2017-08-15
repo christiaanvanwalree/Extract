@@ -4,7 +4,7 @@ namespace Extract
 {
 	public interface IDataLoader
 	{
-		string Export(string database);
-		void Load(DataFile file);
+		void Import(DataFile file);
+		DataFile Export(string database);
 	}
 }

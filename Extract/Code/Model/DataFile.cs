@@ -18,18 +18,24 @@ namespace Extract
 
 			this.database = (database == null) ? id : database;
 			this.path = path;
+			this.type = GetFileType(fileName);
 			
-			if (fileName.EndsWith(".csv")) {
-				this.type = DataType.Csv;
-			} else if (fileName.EndsWith(".bak")) {
-				this.type = DataType.SQL;
-			} else {
-				throw new InvalidDataException("filetype not recognized");
-			}
 		}
+
 
 		public void Delete() {
 			File.Delete(path);
+		}
+
+
+		private DataType GetFileType(string fileName) {
+			if (fileName.EndsWith(DataConfig.csvExt)) {
+				return DataType.CSV;
+			} else if (fileName.EndsWith(DataConfig.bakExt)) {
+				return DataType.SQL;
+			} else {
+				throw new InvalidDataException("filetype not recognized");
+			}
 		}
 	}
 }

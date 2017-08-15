@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 
 namespace Extract
 {
-	public class SQLDatabaseController
+	public class SQLServerContext
 	{
 
 		public static Server Server { get { return server; } }
@@ -22,9 +22,8 @@ namespace Extract
 		private string connectionString;
 
 
-		public SQLDatabaseController(string database) {
+		public SQLServerContext(string database) {
 			if (string.IsNullOrWhiteSpace(database)) throw new ArgumentNullException("database");
-			
 			ChangeDatabase(database);
 		}
 
@@ -42,7 +41,7 @@ namespace Extract
 		}
 
 
-		public static bool DatabaseExists(string database) {
+		public bool DatabaseExists(string database) {
 			return Server.Databases.Contains(database);
 		}
 

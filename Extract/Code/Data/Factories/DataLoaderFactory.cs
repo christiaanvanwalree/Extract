@@ -10,15 +10,9 @@ namespace Extract
 			switch (DataConfig.DatabaseType) {
 
 				case DataType.SQL:
-					SQLDatabaseController context = DatabaseContextFactory.CreateSQLDatabaseContext(database);
-					IDataLoader dataLoader = SQLDataLoaderFactory.CreateDataLoader(type, context);
-					return dataLoader;
-
-				//case Configurations.DatabaseType.MySQL:
-				//	MySQLLoaderFactory mySQLLoaderFactory = new MySQLDataLoaderFactory();
-				//	MySqlConnection context = CreateMySQLDatabaseContext(database);
-				//	return loaderFactory.CreateDataLoader(DataType, context);
-
+					SQLServerContext context = DatabaseContextFactory.CreateSQLDatabaseContext(database);
+					IDataLoader loader = SQLDataLoaderFactory.CreateDataLoader(type, context);
+					return loader;
 
 				default:
 					throw new UnsupportedEngineTypeException("database");

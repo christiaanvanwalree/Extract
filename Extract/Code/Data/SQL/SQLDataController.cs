@@ -9,30 +9,29 @@ namespace Extract
 	public class SQLDataController : IDataController
 	{
 		
-		private readonly SQLDatabaseController controller;
+		private readonly SQLServerContext context;
 
-		public SQLDataController(SQLDatabaseController controller) {
-			if (controller == null) throw new ArgumentNullException("controller");
-
-			this.controller = controller;
+		public SQLDataController(SQLServerContext context) {
+			if (context == null) throw new ArgumentNullException("context");
+			this.context = context;
 		}
 
 
 		public DataModel GetData() {
-			DataModel dataModel = new DataModel(controller.DatabaseName, GetTables());
+			DataModel dataModel = new DataModel(context.DatabaseName, GetTables());
 			return dataModel;
 		}
 
 
 		public DataModel GetMetaData() {
-			DataModel dataModel = new DataModel(controller.DatabaseName, GetMetaTables());
+			DataModel dataModel = new DataModel(context.DatabaseName, GetMetaTables());
 			return dataModel;
 		}
 
 
 		public List<TableModel> GetTables() {
 			List<TableModel> tables = new List<TableModel>();
-			TableCollection collection = controller.Tables;
+			TableCollection collection = context.Tables;
 
 			for (int i = 0; i < collection.Count; i++) {
 				string tableName = collection[i].Name;
@@ -45,7 +44,7 @@ namespace Extract
 
 		public List<TableModel> GetMetaTables() {
 			List<TableModel> tables = new List<TableModel>();
-			TableCollection collection = controller.Tables;
+			TableCollection collection = context.Tables;
 
 			for (int i = 0; i < collection.Count; i++) {
 				string tableName = collection[i].Name;
@@ -58,15 +57,18 @@ namespace Extract
 
 		public List<ColumnModel> GetColumns(string table) {
 			List<ColumnModel> columns = new List<ColumnModel>();
-			ColumnCollection collection = controller.Tables[table].Columns;
-			controller.ExecuteReader("SELECT * FROM [" + table + "];", (reader) => DataModelController.CreateColumnModels(reader, collection, columns));
+			ColumnCollection collection = context.Tables[table].Columns;
+
+			string query = SQLQueryGenerator.GetSelectQuery(table);
+			context.ExecuteReader(query, (reader) => DataModelFactory.FillColumns(reader, collection, columns));
+
 			return columns;
 		}
 
 
 		public List<ColumnModel> GetMetaColumns(string table) {
 			List<ColumnModel> columns = new List<ColumnModel>();
-			ColumnCollection collection = controller.Tables[table].Columns;
+			ColumnCollection collection = context.Tables[table].Columns;
 
 			for (int i = 0; i < collection.Count; i++) {
 				columns.Add(new ColumnModel(collection[i].Name, collection[i].DataType.ToString()));

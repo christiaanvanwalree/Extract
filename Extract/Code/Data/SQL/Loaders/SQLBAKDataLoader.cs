@@ -5,21 +5,21 @@ using System.IO;
 
 namespace Extract
 {
-	public class SQLDataLoader : IDataLoader
+	public class SQLBAKDataLoader : IDataLoader
 	{
 		
-		private readonly SQLDatabaseController controller;
+		private readonly SQLServerContext context;
 		private readonly string savePath = DataConfig.SQLConfig.DbSavePath;
 
 
-		public SQLDataLoader(SQLDatabaseController controller) {
-			if (controller == null) throw new ArgumentNullException("controller");
+		public SQLBAKDataLoader(SQLServerContext context) {
+			if (context == null) throw new ArgumentNullException("context");
 
-			this.controller = controller;
+			this.context = context;
 		}
 
 
-		public string Export(string database) {
+		public DataFile Export(string database) {
 			string fileName = Guid.NewGuid() + DataConfig.bakExt;
 			string relativePath = Path.Combine(DataConfig.exportDir, fileName);
 			string absolutePath = Path.Combine(DataConfig.baseDir, relativePath);
@@ -32,14 +32,15 @@ namespace Extract
 			backup.BackupSetDescription = database;
 			backup.ExpirationDate = DateTime.Today.AddDays(100);
 			backup.Initialize = false;
-			backup.SqlBackup(SQLDatabaseController.Server);
-			
-			return relativePath;
+			backup.SqlBackup(SQLServerContext.Server);
+
+			DataFile file = new DataFile(relativePath, fileName, database);
+			return file;
 		}
 
 
-		public void Load(DataFile file) {
-			if (SQLDatabaseController.DatabaseExists(file.database)) throw new InvalidOperationException("database already exists");
+		public void Import(DataFile file) {
+			if (context.DatabaseExists(file.database)) throw new InvalidOperationException("database already exists");
 
 			Restore restore = new Restore();
 			BackupDeviceItem backup = new BackupDeviceItem(file.path, DeviceType.File);
@@ -53,14 +54,14 @@ namespace Extract
 			restore.RelocateFiles.Add(relocateLogFile);
 			restore.Action = RestoreActionType.Database;
 			restore.ReplaceDatabase = false;
-			restore.SqlRestore(SQLDatabaseController.Server);
+			restore.SqlRestore(SQLServerContext.Server);
 
-			controller.ChangeDatabase(file.database);
+			context.ChangeDatabase(file.database);
 		}
 
 
 		private string LookupLogicalName(Restore restore, string type) {
-			DataTable table = restore.ReadFileList(SQLDatabaseController.Server);
+			DataTable table = restore.ReadFileList(SQLServerContext.Server);
 			DataRowCollection rows = table.Rows;
 			DataColumnCollection columns = table.Columns;
 

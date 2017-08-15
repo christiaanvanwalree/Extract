@@ -1,6 +1,4 @@
-﻿using Extract;
-using Extract;
-using Microsoft.SqlServer.Management.Smo;
+﻿using Microsoft.SqlServer.Management.Smo;
 using System;
 
 namespace Extract
@@ -15,7 +13,7 @@ namespace Extract
 
 				case DataType.SQL:
 
-					SQLDatabaseController context = DatabaseContextFactory.CreateSQLDatabaseContext(database);
+					SQLServerContext context = DatabaseContextFactory.CreateSQLDatabaseContext(database);
 					SQLDataController controller = new SQLDataController(context);
 					return controller;
 

@@ -6,7 +6,7 @@
 		MySQL,
 		PostgreSQL,
 		Excel,
-		Csv,
-		Xml
+		CSV,
+		XML
 	}
 }

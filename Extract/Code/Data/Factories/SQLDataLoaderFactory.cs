@@ -5,16 +5,16 @@ namespace Extract
 	public static class SQLDataLoaderFactory
 	{
 
-		public static IDataLoader CreateDataLoader(DataType type, SQLDatabaseController context) {
+		public static IDataLoader CreateDataLoader(DataType type, SQLServerContext context) {
 
 			switch (type) {
 				case DataType.SQL:
-					return new SQLDataLoader(context);
+					return new SQLBAKDataLoader(context);
 
-				case DataType.Csv:
-					return new SQLCSVDataLoader(context);
+				case DataType.CSV:
+					return new SQLCSVLoader(context);
 
-				case DataType.Xml:
+				case DataType.XML:
 					throw new NotImplementedException("XML");
 
 				default:

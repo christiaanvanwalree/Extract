@@ -17,9 +17,9 @@ namespace Extract
 		public static DataType Convert(string type) {
 			switch (type.ToLower()) {
 				case csv:
-					return DataType.Csv;
+					return DataType.CSV;
 				case xml:
-					return DataType.Xml;
+					return DataType.XML;
 				case sql:
 					return DataType.SQL;
 				case excel:
@@ -33,9 +33,9 @@ namespace Extract
 
 		public static string Convert(DataType type) {
 			switch (type) {
-				case DataType.Csv:
+				case DataType.CSV:
 					return csv;
-				case DataType.Xml:
+				case DataType.XML:
 					return xml;
 				case DataType.SQL:
 					return sql;

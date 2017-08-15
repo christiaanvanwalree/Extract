@@ -4,10 +4,10 @@ using System.Data;
 
 namespace Extract
 {
-	public static class DataModelController
+	public static class DataModelFactory
 	{
 
-		public static List<ColumnModel> CreateColumnModels(IDataReader reader, ICollection columns, List<ColumnModel> models) {
+		public static void FillColumns(IDataReader reader, ICollection columns, List<ColumnModel> models) {
 
 			List<string> columnNames = new List<string>();
 			Dictionary<string, string> columnTypes = new Dictionary<string, string>();
@@ -39,8 +39,6 @@ namespace Extract
 				string columnName = columnNames[i];
 				models.Add(new ColumnModel(columnName, columnTypes[columnName].ToString(), columnValues[columnName]));
 			}
-
-			return models;
 		}
 	}
 }

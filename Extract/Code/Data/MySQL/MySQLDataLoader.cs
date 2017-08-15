@@ -14,11 +14,11 @@ namespace Extract.MySQL
 			this.connection = connection;
 		}
 
-		public string Export(string database) {
-			return string.Empty;
+		public DataFile Export(string database) {
+			throw new NotImplementedException("MySQL");
 		}
 
-		public void Load(DataFile file) {
+		public void Import(DataFile file) {
 			MySqlCommand command = new MySqlCommand();
 			MySqlBackup backup = new MySqlBackup(command);
 
@@ -26,19 +26,6 @@ namespace Extract.MySQL
 			connection.Open();
 			backup.ImportFromFile(file.path);
 			connection.Close();
-		}
-
-		public void Unload(DataFile file) {
-			MySqlCommand command = new MySqlCommand("DROP DATABASE IF EXISTS @database;", connection);
-			command.Parameters.Add(new MySqlParameter("@database", file.database));
-
-			connection.Open();
-			command.ExecuteNonQuery();
-			connection.Close();
-		}
-
-		public bool DatabaseExists(string database) {
-			throw new NotImplementedException("mysql database exists");
 		}
 	}
 }
