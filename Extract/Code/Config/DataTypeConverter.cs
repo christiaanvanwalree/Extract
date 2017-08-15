@@ -21,11 +21,11 @@ namespace Extract
 				case xml:
 					return DataType.Xml;
 				case sql:
-					return DataType.Sql;
+					return DataType.SQL;
 				case excel:
 					return DataType.Excel;
 				case mysql:
-					return DataType.MySql;
+					return DataType.MySQL;
 				default:
 					throw new NotImplementedException("type");
 			}
@@ -37,11 +37,11 @@ namespace Extract
 					return csv;
 				case DataType.Xml:
 					return xml;
-				case DataType.Sql:
+				case DataType.SQL:
 					return sql;
 				case DataType.Excel:
 					return excel;
-				case DataType.MySql:
+				case DataType.MySQL:
 					return mysql;
 				default:
 					throw new NotImplementedException("type");

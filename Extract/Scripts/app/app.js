@@ -6,14 +6,22 @@ extractApp.controller('ExtractController', ['$scope', '$http', function ExtractC
 
 	$scope.database = '';
 
-	$scope.export = function () {
-		$http.get('api/export', { params: { 'database': $scope.database , 'type' : 'sql'} })
+	$scope.exportCsv = function () {
+		$http.get('api/export', { params: { 'database': $scope.database , 'type' : 'csv'} })
 		.then(
 		function (success) {
 			console.log(success);
 			window.open(success.data, '_blank', '');
-		}
-	)
+		})
+	};
+
+	$scope.exportSQL = function () {
+		$http.get('api/export', { params: { 'database': $scope.database, 'type': 'sql' } })
+		.then(
+		function (success) {
+			console.log(success);
+			window.open(success.data, '_blank', '');
+		})
 	};
 
 	$scope.upload = function () {

@@ -2,9 +2,9 @@
 {
 	public enum DataType
 	{
-		Sql,
-		MySql,
-		PostgreSql,
+		SQL,
+		MySQL,
+		PostgreSQL,
 		Excel,
 		Csv,
 		Xml

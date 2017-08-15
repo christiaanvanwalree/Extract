@@ -5,8 +5,6 @@ namespace Extract
 	public interface IDataLoader
 	{
 		string Export(string database);
-
 		void Load(DataFile file);
-		void Unload(DataFile file);
 	}
 }

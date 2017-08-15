@@ -22,7 +22,7 @@ namespace Extract
 			if (fileName.EndsWith(".csv")) {
 				this.type = DataType.Csv;
 			} else if (fileName.EndsWith(".bak")) {
-				this.type = DataType.Sql;
+				this.type = DataType.SQL;
 			} else {
 				throw new InvalidDataException("filetype not recognized");
 			}

@@ -922,23 +922,27 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Code\DataConfig.cs" />
-    <Compile Include="Code\DataControllerFactory.cs" />
-    <Compile Include="Code\DatabaseContextFactory.cs" />
-    <Compile Include="Code\CsvToSqlDataLoader.cs" />
-    <Compile Include="Code\DataLoaderFactory.cs" />
-    <Compile Include="Code\IDataController.cs" />
-    <Compile Include="Code\IDataLoader.cs" />
-    <Compile Include="Code\MySqlToMySqlDataLoader.cs" />
-    <Compile Include="Code\SqlDataController.cs" />
-    <Compile Include="Code\SqlDataLoaderFactory.cs" />
-    <Compile Include="Code\SqlToSqlDataLoader.cs" />
-    <Compile Include="Models\ColumnModel.cs" />
-    <Compile Include="Models\DataFile.cs" />
-    <Compile Include="Models\DataModel.cs" />
-    <Compile Include="Code\DataType.cs" />
-    <Compile Include="Models\TableModel.cs" />
-    <Compile Include="Code\DataTypeConverter.cs" />
+    <Compile Include="Code\Config\DataConfig.cs" />
+    <Compile Include="Code\Config\DataType.cs" />
+    <Compile Include="Code\Config\DataTypeConverter.cs" />
+    <Compile Include="Code\Data\CSV\CSVReaderWriter.cs" />
+    <Compile Include="Code\Data\IDataController.cs" />
+    <Compile Include="Code\Data\IDataLoader.cs" />
+    <Compile Include="Code\Data\MySQL\MySQLDataLoader.cs" />
+    <Compile Include="Code\Data\SQL\Loaders\SQLCSVDataLoader.cs" />
+    <Compile Include="Code\Data\SQL\Loaders\SQLDataLoader.cs" />
+    <Compile Include="Code\Data\SQL\SQLDatabaseController.cs" />
+    <Compile Include="Code\Data\SQL\SQLDataController.cs" />
+    <Compile Include="Code\Data\SQL\SQLQueryGenerator.cs" />
+    <Compile Include="Code\Factories\DatabaseContextFactory.cs" />
+    <Compile Include="Code\Factories\DataControllerFactory.cs" />
+    <Compile Include="Code\Factories\DataLoaderFactory.cs" />
+    <Compile Include="Code\Factories\SQLDataLoaderFactory.cs" />
+    <Compile Include="Code\Models\ColumnModel.cs" />
+    <Compile Include="Code\Models\DataFile.cs" />
+    <Compile Include="Code\Models\DataModel.cs" />
+    <Compile Include="Code\Models\DataModelController.cs" />
+    <Compile Include="Code\Models\TableModel.cs" />
     <Compile Include="Controllers\ExtractController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -975,6 +979,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

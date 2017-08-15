@@ -13,14 +13,15 @@ namespace Extract
 
 			switch (DataConfig.DatabaseType) {
 
-				case DataType.Sql:
+				case DataType.SQL:
 
-					Server context = DatabaseContextFactory.CreateSqlDatabaseContext(database);
-					return new SqlDataController(context);
+					SQLDatabaseController context = DatabaseContextFactory.CreateSQLDatabaseContext(database);
+					SQLDataController controller = new SQLDataController(context);
+					return controller;
 
-				//case Configurations.DatabaseType.MySql:
-				//	MySqlLoaderFactory mySqlLoaderFactory = new MySqlDataLoaderFactory();
-				//	MySqlConnection context = CreateMySqlDatabaseContext(database);
+				//case Configurations.DatabaseType.MySQL:
+				//	MySQLLoaderFactory mySQLLoaderFactory = new MySQLDataLoaderFactory();
+				//	MySqlConnection context = CreateMySQLDatabaseContext(database);
 				//	return loaderFactory.CreateDataLoader(DataType, context);
 
 

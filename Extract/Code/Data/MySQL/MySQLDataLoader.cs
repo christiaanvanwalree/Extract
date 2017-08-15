@@ -1,14 +1,14 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 
-namespace Extract.MySql
+namespace Extract.MySQL
 {
-	public class MySqlToMySqlDataLoader : IDataLoader
+	public class MySQLDataLoader : IDataLoader
 	{
 
 		private readonly MySqlConnection connection;
 
-		public MySqlToMySqlDataLoader(MySqlConnection connection) {
+		public MySQLDataLoader(MySqlConnection connection) {
 			if (connection == null) throw new ArgumentNullException("connection");
 
 			this.connection = connection;
@@ -35,6 +35,10 @@ namespace Extract.MySql
 			connection.Open();
 			command.ExecuteNonQuery();
 			connection.Close();
+		}
+
+		public bool DatabaseExists(string database) {
+			throw new NotImplementedException("mysql database exists");
 		}
 	}
 }
