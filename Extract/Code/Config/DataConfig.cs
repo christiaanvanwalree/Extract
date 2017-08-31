@@ -18,6 +18,7 @@ namespace Extract
 		public static readonly string configPath = "config.json";
 		public static readonly string exportDir = "exports";
 		public static readonly string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+		public static readonly string uploadDir = "~/App_Data/uploads";
 
 		public static readonly DataType DatabaseType = DataType.SQL;
 		public static readonly SQLConfig SQLConfig;

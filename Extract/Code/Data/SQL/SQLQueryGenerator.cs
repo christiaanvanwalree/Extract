@@ -38,6 +38,11 @@ namespace Extract
 		}
 
 
+		public static string GetDropDatabaseQuery(string database) {
+			return "DROP DATABASE " + EncloseInBrackets(database) + ";";
+		}
+
+
 		public static string GetCreateTableQuery(string table, string[] columns) {
 			if (string.IsNullOrWhiteSpace(table)) throw new ArgumentNullException("table");
 			if (columns == null || columns.Length == 0) throw new ArgumentNullException("columns");

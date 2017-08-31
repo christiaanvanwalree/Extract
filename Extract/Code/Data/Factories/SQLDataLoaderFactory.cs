@@ -8,17 +8,17 @@ namespace Extract
 		public static IDataLoader CreateDataLoader(DataType type, SQLServerContext context) {
 
 			switch (type) {
-				case DataType.SQL:
+				case DataType.BAK:
 					return new SQLBAKDataLoader(context);
 
 				case DataType.CSV:
-					return new SQLCSVLoader(context);
+					return new SQLCSVDataLoader(context);
 
 				case DataType.XML:
-					throw new NotImplementedException("XML");
+					return new SQLXMLDataLoader(context);
 
 				default:
-					throw new ArgumentException("Type " + type + " does not exist");
+					throw new ArgumentException("DataType " + type + " not supported");
 			}
 		}
 	}

@@ -10,7 +10,23 @@ namespace Extract
 	public static class DatabaseContextFactory
 	{
 
-		public static SQLServerContext CreateSQLDatabaseContext(string database = null) {
+
+		public static IDatabaseContext CreateDatabaseContext(string database) {
+			switch (DataConfig.DatabaseType) {
+
+				case DataType.SQL:
+					return CreateSQLDatabaseContext(database);
+
+				//case DataType.MySQL:
+				//	return CreateMySQLDatabaseContext(database);
+
+				default:
+					throw new UnsupportedEngineTypeException("DatabaseType");
+			}
+		}
+
+
+		public static SQLServerContext CreateSQLDatabaseContext(string database) {
 			database = (database == null) ? DataConfig.SQLConfig.InitialCatalog : database;
 			SQLServerContext context = new SQLServerContext(database);
 			return context;

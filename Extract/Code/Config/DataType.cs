@@ -2,6 +2,8 @@
 {
 	public enum DataType
 	{
+		Archive,
+		BAK,
 		SQL,
 		MySQL,
 		PostgreSQL,

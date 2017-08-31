@@ -1,25 +1,28 @@
 ﻿using Microsoft.SqlServer.Management.Smo;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
+using System.IO.Compression;
 
 namespace Extract
 {
 	public class SQLBAKDataLoader : IDataLoader
 	{
-		
 		private readonly SQLServerContext context;
 		private readonly string savePath = DataConfig.SQLConfig.DbSavePath;
 
 
 		public SQLBAKDataLoader(SQLServerContext context) {
 			if (context == null) throw new ArgumentNullException("context");
-
 			this.context = context;
 		}
 
 
 		public DataFile Export(string database) {
+			if (!context.DatabaseExists(database)) throw new InvalidOperationException("database does not exist");
+
 			string fileName = Guid.NewGuid() + DataConfig.bakExt;
 			string relativePath = Path.Combine(DataConfig.exportDir, fileName);
 			string absolutePath = Path.Combine(DataConfig.baseDir, relativePath);
@@ -34,7 +37,7 @@ namespace Extract
 			backup.Initialize = false;
 			backup.SqlBackup(SQLServerContext.Server);
 
-			DataFile file = new DataFile(relativePath, fileName, database);
+			DataFile file = new DataFile(Path.Combine(DataConfig.baseDir, relativePath), fileName, database);
 			return file;
 		}
 
@@ -86,6 +89,24 @@ namespace Extract
 				}
 			}
 			throw new Exception("Could not find logical name");
+		}
+
+
+		private List<DataFile> ExtractZip(DataFile zip) {
+
+			List<DataFile> dataFiles = new List<DataFile>();
+			ZipArchive archive = ZipFile.OpenRead(zip.path);
+			ReadOnlyCollection<ZipArchiveEntry> entries = archive.Entries;
+
+			string directory = zip.path.Replace(DataConfig.zipExt, string.Empty);
+			archive.ExtractToDirectory(directory);
+
+			for (int i = 0; i < entries.Count; i++) {
+				ZipArchiveEntry entry = entries[i];
+				dataFiles.Add(new DataFile(Path.Combine(directory, entry.FullName), entry.Name, zip.database));
+			}
+
+			return dataFiles;
 		}
 	}
 }

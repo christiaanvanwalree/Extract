@@ -4,21 +4,22 @@ namespace Extract
 {
 	public class DataFile
 	{
-		public readonly string id;
+		public readonly string guid;
 		public readonly string fileName;
 		public readonly string database;
 		public readonly string path;
-		public readonly DataType type;
+		public readonly string relativePath;
+		public readonly DataType dataType;
 
-		public DataFile(string path, string fileName, string database = null) {
-			this.id = path.Substring(path.LastIndexOf('\\') + 1).Replace("BodyPart_", string.Empty);
 
+		public DataFile(string path, string fileName, string database) {
+			this.path = path;
 			fileName = fileName.Replace("\"", string.Empty);
 			this.fileName = (fileName.Contains(".")) ? fileName.Remove(fileName.IndexOf('.')) : fileName;
-
-			this.database = (database == null) ? id : database;
-			this.path = path;
-			this.type = GetFileType(fileName);
+			this.guid = path.Substring(path.LastIndexOf('\\') + 1).Replace("BodyPart_", string.Empty);
+			this.database = (string.IsNullOrWhiteSpace(database)) ? guid : database;
+			this.relativePath = path.Remove(0, DataConfig.baseDir.Length);
+			this.dataType = GetFileType(fileName);
 			
 		}
 
@@ -32,7 +33,11 @@ namespace Extract
 			if (fileName.EndsWith(DataConfig.csvExt)) {
 				return DataType.CSV;
 			} else if (fileName.EndsWith(DataConfig.bakExt)) {
-				return DataType.SQL;
+				return DataType.BAK;
+			} else if (fileName.EndsWith(DataConfig.xmlExt)) {
+				return DataType.XML;
+			} else if (fileName.EndsWith(DataConfig.zipExt)) {
+				return DataType.Archive;
 			} else {
 				throw new InvalidDataException("filetype not recognized");
 			}

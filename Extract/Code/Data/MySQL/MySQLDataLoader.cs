@@ -6,6 +6,12 @@ namespace Extract.MySQL
 	public class MySQLDataLoader : IDataLoader
 	{
 
+		public IDatabaseContext Context {
+			get {
+				throw new NotImplementedException();
+			}
+		}
+
 		private readonly MySqlConnection connection;
 
 		public MySQLDataLoader(MySqlConnection connection) {
@@ -13,6 +19,8 @@ namespace Extract.MySQL
 
 			this.connection = connection;
 		}
+
+		
 
 		public DataFile Export(string database) {
 			throw new NotImplementedException("MySQL");

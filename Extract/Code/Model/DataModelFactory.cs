@@ -25,6 +25,7 @@ namespace Extract
 					if (!columnValues.ContainsKey(column)) {
 						columnValues.Add(column, new List<string>());
 					}
+
 					columnValues[column].Add((!reader.IsDBNull(i)) ? reader.GetValue(i).ToString() : string.Empty);
 
 					if (!columnTypes.ContainsKey(column)) {

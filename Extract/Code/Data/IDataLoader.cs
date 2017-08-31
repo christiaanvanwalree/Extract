@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace Extract
 {
 	public interface IDataLoader

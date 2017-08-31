@@ -1,13 +1,20 @@
-﻿// Define the `phonecatApp` module
-var extractApp = angular.module('ExtractApp', []);
+﻿var extractApp = angular.module('ExtractApp', []);
 
-// Define the `ExtractController` controller on the `ExtractApp` module
 extractApp.controller('ExtractController', ['$scope', '$http', function ExtractController($scope, $http) {
 
 	$scope.database = '';
 
 	$scope.exportCsv = function () {
 		$http.get('api/export', { params: { 'database': $scope.database , 'type' : 'csv'} })
+		.then(
+		function (success) {
+			console.log(success);
+			window.open(success.data, '_blank', '');
+		})
+	};
+
+	$scope.exportXml = function () {
+		$http.get('api/export', { params: { 'database': $scope.database, 'type': 'xml' } })
 		.then(
 		function (success) {
 			console.log(success);

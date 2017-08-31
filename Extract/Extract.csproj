@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Extract</RootNamespace>
     <AssemblyName>Extract</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -89,6 +90,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\MySqlBackup.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -99,16 +101,14 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web.Razor">
@@ -925,12 +925,14 @@
     <Compile Include="Code\Config\DataConfig.cs" />
     <Compile Include="Code\Config\DataType.cs" />
     <Compile Include="Code\Config\DataTypeConverter.cs" />
-    <Compile Include="Code\Data\CSV\CSVReaderWriter.cs" />
+    <Compile Include="Code\Data\DataLoaderHandler.cs" />
+    <Compile Include="Code\Data\CSV\CSVReadWrite.cs" />
     <Compile Include="Code\Data\IDataController.cs" />
     <Compile Include="Code\Data\IDataLoader.cs" />
     <Compile Include="Code\Data\MySQL\MySQLDataLoader.cs" />
     <Compile Include="Code\Data\SQL\Loaders\SQLCSVDataLoader.cs" />
     <Compile Include="Code\Data\SQL\Loaders\SQLBAKDataLoader.cs" />
+    <Compile Include="Code\Data\SQL\Loaders\SQLXMLDataLoader.cs" />
     <Compile Include="Code\Data\SQL\SQLServerContext.cs" />
     <Compile Include="Code\Data\SQL\SQLDataController.cs" />
     <Compile Include="Code\Data\SQL\SQLQueryGenerator.cs" />
@@ -938,6 +940,7 @@
     <Compile Include="Code\Data\Factories\DataControllerFactory.cs" />
     <Compile Include="Code\Data\Factories\DataLoaderFactory.cs" />
     <Compile Include="Code\Data\Factories\SQLDataLoaderFactory.cs" />
+    <Compile Include="Code\Data\IDatabaseContext.cs" />
     <Compile Include="Code\Model\ColumnModel.cs" />
     <Compile Include="Code\Model\DataFile.cs" />
     <Compile Include="Code\Model\DataModel.cs" />

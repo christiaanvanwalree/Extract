@@ -1,5 +1,4 @@
-﻿using Extract;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,26 +15,25 @@ namespace Extract
 		[HttpPost]
 		[Route("api/upload")]
 		public Task<DataFile> Upload(string database = null) {
+			if (!Request.Content.IsMimeMultipartContent()) throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
 
-			if (!string.IsNullOrWhiteSpace(database)) {
-				database = ValidateDatabaseName(database);
-			}
-
-			HttpRequestMessage request = this.Request;
-			if (!request.Content.IsMimeMultipartContent()) throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-
-			string root = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/uploads");
+			database = ValidateDatabaseName(database);
+			string root = System.Web.HttpContext.Current.Server.MapPath(DataConfig.uploadDir);
 			MultipartFormDataStreamProvider provider = new MultipartFormDataStreamProvider(root);
 
-			Task<DataFile> task = request.Content.ReadAsMultipartAsync(provider).ContinueWith<DataFile>(o => {
+			Task<DataFile> task = Request.Content.ReadAsMultipartAsync(provider).ContinueWith(o => {
 
 				MultipartFileData data = provider.FileData.First();
-				string localFileName = data.LocalFileName;
+				string path = data.LocalFileName;
 				string fileName = data.Headers.ContentDisposition.FileName;
 
-				DataFile file = new DataFile(localFileName, fileName, database);
-				IDataLoader loader = DataLoaderFactory.CreateDataLoader(file.type, database);
-				loader.Import(file);
+				DataFile file = new DataFile(path, fileName, database);
+				if (file.dataType == DataType.Archive) throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+				IDatabaseContext context = DatabaseContextFactory.CreateDatabaseContext(database);
+				DataLoaderHandler loaderHandler = new DataLoaderHandler(context);
+
+				loaderHandler.ImportData(file);
 
 				return file;
 			});
@@ -74,14 +72,17 @@ namespace Extract
 		[HttpGet]
 		[Route("api/export")]
 		public string GetExport(string database, string type) {
-			IDataLoader loader = DataLoaderFactory.CreateDataLoader(DataTypeConverter.Convert(type), database);
-			string relativePath = loader.Export(database);
-			string downloadUrl = Path.Combine(Request.RequestUri.GetLeftPart(UriPartial.Authority), relativePath);
+			IDatabaseContext context = DatabaseContextFactory.CreateDatabaseContext(database);
+			DataLoaderHandler loaderHandler = new DataLoaderHandler(context);
+			DataFile file = loaderHandler.ExportData(DataTypeConverter.Convert(type), database);
+			string downloadUrl = Path.Combine(Request.RequestUri.GetLeftPart(UriPartial.Authority), file.relativePath);
 			return downloadUrl;
 		}
 
 
 		private string ValidateDatabaseName(string database) {
+			if (string.IsNullOrWhiteSpace(database)) return null;
+
 			string[] idArray = database.Split('-');
 			if (idArray.Length != 5) return null;
 			if (idArray[0].ToCharArray().Length != 8) return null;

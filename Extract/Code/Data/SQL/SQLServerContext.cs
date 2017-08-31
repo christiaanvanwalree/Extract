@@ -5,15 +5,14 @@ using System.Data.SqlClient;
 
 namespace Extract
 {
-	public class SQLServerContext
+	public class SQLServerContext : IDatabaseContext
 	{
 
 		public static Server Server { get { return server; } }
-
 		public string DatabaseName { get { return database; } }
-		public Database Database { get { return Server.Databases[database]; } }
-		public TableCollection Tables { get { return Database.Tables; } }
-		public DatabaseCollection Databases { get { return server.Databases; } }
+		public Database Database { get { return Server?.Databases[database]; } }
+		public TableCollection Tables { get { return Database?.Tables; } }
+		public DatabaseCollection Databases { get { return Server?.Databases; } }
 
 		private readonly static SQLConfig config = DataConfig.SQLConfig;
 		private readonly static Server server = new Server();
@@ -24,26 +23,45 @@ namespace Extract
 
 		public SQLServerContext(string database) {
 			if (string.IsNullOrWhiteSpace(database)) throw new ArgumentNullException("database");
+			this.database = database = (DatabaseExists(database)) ? database : config.InitialCatalog;
 			ChangeDatabase(database);
 		}
 
 		public void Refresh() {
-			server.Refresh();
-			Databases.Refresh();
-			Tables.Refresh();
+			Server?.Refresh();
+			Databases?.Refresh();
+			Tables?.Refresh();
 		}
 
 
 		public void ChangeDatabase(string database) {
-			Server.Databases.Refresh();
 			this.database = database;
 			this.connectionString = string.Format(config.connectionString, config.DataSource, database, config.UserId, config.Password, config.ConnectionTimeout);
+			Refresh();
 		}
 
 
 		public bool DatabaseExists(string database) {
+			if (string.IsNullOrWhiteSpace(database)) return false; 
 			return Server.Databases.Contains(database);
 		}
+
+
+		public void CreateDatabase(string database) {
+			if (DatabaseExists(database)) throw new InvalidOperationException("database already exists");
+			string query = SQLQueryGenerator.GetCreateDatabaseQuery(database);
+			ExecuteNonQuery(query);
+			ChangeDatabase(database);
+		}
+
+
+		public void DropDatabase(string database) {
+			if (!DatabaseExists(database)) throw new InvalidOperationException("database does not exists");
+			if (this.database.Equals(database)) ChangeDatabase(config.InitialCatalog);
+			server.KillDatabase(database);
+			Refresh();
+		}
+
 
 		public void ExecuteReader(string commandText, Action<SqlDataReader> action) {
 			using (SqlConnection connection = new SqlConnection(connectionString)) {
@@ -53,16 +71,22 @@ namespace Extract
 					action(reader);
 				}
 			}
+			Refresh();
 		}
 
 
 		public void ExecuteNonQuery(string commandText) {
-			using (SqlConnection connection = new SqlConnection(connectionString)) {
-				using (SqlCommand command = new SqlCommand(commandText, connection)) {
-					connection.Open();
-					command.ExecuteNonQuery();
+			try {
+				using (SqlConnection connection = new SqlConnection(connectionString)) {
+					using (SqlCommand command = new SqlCommand(commandText, connection)) {
+						connection.Open();
+						command.ExecuteNonQuery();
+					}
 				}
+			} catch (SqlException e) {
+				throw new InvalidOperationException(e.Message);
 			}
+			Refresh();
 		}
 
 
@@ -95,6 +119,7 @@ namespace Extract
 					action(bulkCopy);
 				}
 			}
+			Refresh();
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Extract
 				case xml:
 					return DataType.XML;
 				case sql:
-					return DataType.SQL;
+					return DataType.BAK;
 				case excel:
 					return DataType.Excel;
 				case mysql:
@@ -37,7 +37,7 @@ namespace Extract
 					return csv;
 				case DataType.XML:
 					return xml;
-				case DataType.SQL:
+				case DataType.BAK:
 					return sql;
 				case DataType.Excel:
 					return excel;
